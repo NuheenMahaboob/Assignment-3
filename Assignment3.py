@@ -1,13 +1,22 @@
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
-
+import math
+import time
 
 WINDOW_WIDTH = 1000
 WINDOW_HEIGHT = 800
 
 # Camera-related variables
-camera_pos = (0, 500, 500)
+camera_angle = 90
+camera_radius = 300
+camera_height = 500
+
+camera_rotation_speed = 2
+camera_height_speed = 10
+
+
+camera_pos = (0, 300, 500)
 fovY = 120  # Field of view
 aspectRatio = WINDOW_WIDTH/WINDOW_HEIGHT
 zNear = 0.1
@@ -177,23 +186,26 @@ def specialKeyListener(key, x, y):
     """
     Handles special key inputs (arrow keys) for adjusting the camera angle and height.
     """
-    global camera_pos
-    x, y, z = camera_pos
-    # Move camera up (UP arrow key)
-    # if key == GLUT_KEY_UP:
+    global camera_pos, camera_angle, camera_height
 
-    # # Move camera down (DOWN arrow key)
-    # if key == GLUT_KEY_DOWN:
+    if key == GLUT_KEY_UP:
+        camera_height += camera_height_speed
 
-    # moving camera left (LEFT arrow key)
+    if key == GLUT_KEY_DOWN:
+        camera_height -= camera_height_speed
+
     if key == GLUT_KEY_LEFT:
-        x -= 1  # Small angle decrement for smooth movement
+        camera_angle -= camera_rotation_speed
 
-    # moving camera right (RIGHT arrow key)
     if key == GLUT_KEY_RIGHT:
-        x += 1  # Small angle increment for smooth movement
+        camera_angle += camera_rotation_speed
 
-    camera_pos = (x, y, z)
+    angle = math.radians(camera_angle)
+
+    camera_x = camera_radius * math.cos(angle)
+    camera_y = camera_radius * math.sin(angle)
+
+    camera_pos = (camera_x, camera_y, camera_height)
 
 
 def mouseListener(button, state, x, y):
